@@ -34,7 +34,6 @@ public class Scan extends View {
                 getBucketId(CAMERA_IMAGE_BUCKET_NAME);
 
     public Scan(Context context) {
-
         super(context);
     }
 
@@ -47,8 +46,7 @@ public class Scan extends View {
         }
 
 
-        public static List<String> getCameraImages(Context context) {
-            System.out.println("1");
+        public static ArrayList<String> getCameraImages(Context context) {
             final String[] projection = { MediaStore.Images.Media.DATA };
             final String selection = MediaStore.Images.Media.BUCKET_ID + " = ?";
             final String[] selectionArgs = { CAMERA_IMAGE_BUCKET_ID };
@@ -59,7 +57,6 @@ public class Scan extends View {
                     null);
             ArrayList<String> result = new ArrayList<String>(cursor.getCount());
             if (cursor.moveToFirst()) {
-                System.out.println("2");
                 final int dataColumn = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                 do {
                     final String data = cursor.getString(dataColumn);
