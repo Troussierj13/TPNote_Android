@@ -39,7 +39,9 @@ public class DrawImageView extends View {
 
         mPaintDraw = new Paint(Paint.DITHER_FLAG);
 
-        mDraw = BitmapFactory.decodeResource(getResources(), R.drawable.img);
+        Scan sc = new Scan(context);
+
+        mDraw = BitmapFactory.decodeFile(sc.getCameraImages(context).get(0));
 
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGesture());
 
@@ -48,8 +50,6 @@ public class DrawImageView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        //canvas.drawText("texte",10, 20, mPaint);
-        //canvas.drawText("texte",10, 60, mPaint);
 
         Bitmap tmp = Bitmap.createScaledBitmap(mDraw, (int) (480f * mScale), (int) (320f * mScale), false);
         canvas.drawBitmap(tmp, 0, 0, mPaintDraw);
