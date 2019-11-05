@@ -78,8 +78,6 @@ public class DrawImageView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        System.out.println("Draw()");
-
         int x = 0;
         int y = 0;
 
