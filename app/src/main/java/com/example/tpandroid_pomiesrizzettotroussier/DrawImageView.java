@@ -27,12 +27,13 @@ public class DrawImageView extends View {
     private int mImgHeight;
     private int mMaxNbPictureOnLine;
     private int mNbPicture;
+    private int mLastNbPicture;
     private Vector2Int mRangeScale;
     private ArrayList<String> mPaths;
 
-    private class Vector2Int {
-        int x;
-        int y;
+    public class Vector2Int {
+        public int x;
+        public int y;
 
         Vector2Int(int _x, int _y) {
             x = _x;
@@ -47,7 +48,9 @@ public class DrawImageView extends View {
         mMaxNbPictureOnLine = 7;
         mHeight = height;
         mWidth = width;
+
         mNbPicture = 1+mMaxNbPictureOnLine - (int)(mScale*mMaxNbPictureOnLine/mRangeScale.y);
+        mLastNbPicture = mNbPicture;
         mImgWidth = (mWidth/mNbPicture);
         mImgHeight = mImgWidth*mBasicSizeImg.y/mBasicSizeImg.x;
         mPaintDraw = new Paint(Paint.DITHER_FLAG);
@@ -57,14 +60,13 @@ public class DrawImageView extends View {
         for(int i=1;i<66;i++) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
             BitmapFactory.decodeFile(mPaths.get(mPaths.size()-i), options);
 
             int rationX = (int)Math.ceil(options.outWidth/mImgWidth);
             int rationY = (int)Math.ceil(options.outHeight/mImgHeight);
 
-            int finalRatio = (rationX>rationY ? rationX : rationY);
-
-            options.inSampleSize = finalRatio;
+            options.inSampleSize = (rationX>rationY ? rationX : rationY);
             options.inJustDecodeBounds = false;
 
             Bitmap bm = BitmapFactory.decodeFile(mPaths.get(mPaths.size()-i), options);
@@ -83,7 +85,7 @@ public class DrawImageView extends View {
 
         for(int i=0; i<mDraw.size() ; i++) {
             Bitmap tmp = Bitmap.createScaledBitmap(mDraw.get(i), mImgWidth, mImgHeight, false);
-            canvas.drawBitmap(tmp, mImgWidth*x, mImgWidth*y, mPaintDraw);
+            canvas.drawBitmap(tmp, mImgWidth*x, mImgHeight*y, mPaintDraw);
             x++;
             if(x>=mNbPicture) {
                 x = 0;
@@ -108,11 +110,16 @@ public class DrawImageView extends View {
             else if(mScale > (float)mRangeScale.y)
                 mScale = (float)mRangeScale.y;
 
-            mNbPicture = 1 + mMaxNbPictureOnLine - (int)(mScale*mMaxNbPictureOnLine/mRangeScale.y);
-            mImgWidth = (mWidth/mNbPicture);
-            mImgHeight = mImgWidth*mBasicSizeImg.y/mBasicSizeImg.x;
 
-            invalidate();
+            mNbPicture = 1 + mMaxNbPictureOnLine - (int)(mScale*mMaxNbPictureOnLine/mRangeScale.y);
+
+            if(mNbPicture != mLastNbPicture) {
+                mImgWidth = (mWidth / mNbPicture);
+                mImgHeight = mImgWidth * mBasicSizeImg.y / mBasicSizeImg.x;
+                invalidate();
+            }
+
+            mLastNbPicture = mNbPicture;
             return true;
         }
     }
