@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -56,7 +57,7 @@ public class DrawImageView extends View {
         for(int i=1;i<66;i++) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
-            Bitmap bm = BitmapFactory.decodeFile(mPaths.get(mPaths.size()-i), options);
+            BitmapFactory.decodeFile(mPaths.get(mPaths.size()-i), options);
 
             int rationX = (int)Math.ceil(options.outWidth/mImgWidth);
             int rationY = (int)Math.ceil(options.outHeight/mImgHeight);
@@ -66,7 +67,7 @@ public class DrawImageView extends View {
             options.inSampleSize = finalRatio;
             options.inJustDecodeBounds = false;
 
-            bm = BitmapFactory.decodeFile(mPaths.get(mPaths.size()-i), options);
+            Bitmap bm = BitmapFactory.decodeFile(mPaths.get(mPaths.size()-i), options);
 
             mDraw.add(bm);
         }
