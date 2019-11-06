@@ -76,7 +76,7 @@ public class Scan extends View {
                         columns, // The columns we're interested in
                         null, // A WHERE-filter query
                         null, // The arguments for the filter-query
-                        MediaStore.Images.Media.DATE_ADDED + " DESC" // Order the results, newest first
+                        MediaStore.Images.Media.DATE_ADDED + " ASC" // Order the results, newest first
                 );
 
         List<String> result = new ArrayList<String>(cursor.getCount());
