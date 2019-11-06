@@ -35,7 +35,6 @@ public class DrawImageView extends View {
     private float mScroll = 0f;
     private Vector2Int mRangeScale;
     private ArrayList<String> mPaths;
-    private Vector2Int mFirstLastLoad;
     private int mActualLoad;
     private Handler mHandler;
     private Vector2Int mRangeScroll;
@@ -78,10 +77,6 @@ public class DrawImageView extends View {
         mPaintDraw = new Paint(Paint.DITHER_FLAG);
         mPaths = Scan.cheminImagePeriph(context);
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGesture());
-
-        int max = (int)((mHeight+(int)(mScroll*mImgHeight))/mImgHeight*mNbPicture*1.5);
-        int realMax = (max>mPaths.size()-1 ? mPaths.size()-1 : max);
-        mFirstLastLoad = new Vector2Int((int)(mScroll*mImgHeight), realMax);
 
         LoadBitmap(0, mPaths.size()-1);
     }
@@ -204,11 +199,7 @@ public class DrawImageView extends View {
                 mImgWidth = (mWidth / mNbPicture);
                 mImgHeight = mImgWidth * mBasicSizeImg.y / mBasicSizeImg.x;
 
-                int max = (int)((mHeight+(int)(mScroll*mImgHeight))/mImgHeight*mNbPicture*1.5);
-                int realMax = (max>mPaths.size()-1 ? mPaths.size()-1 : max);
-                mFirstLastLoad = new Vector2Int(0, realMax);
                 mScroll = 0;
-                mRangeScroll = new Vector2Int(0, (int)(realMax/mNbPicture-mHeight/mImgHeight*0.8));
                 LoadBitmap(0, mPaths.size()-1);
 
                 invalidate();
