@@ -62,21 +62,11 @@ public class DrawImageView extends View {
         mPaths = Scan.cheminImagePeriph(context);
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGesture());
 
-        mFirstLastLoad = new Vector2Int((int)(mScroll*mImgHeight), (int)((mHeight+(int)(mScroll*mImgHeight))/mImgHeight*mNbPicture*1.5));
+        int max = (int)((mHeight+(int)(mScroll*mImgHeight))/mImgHeight*mNbPicture*1.5);
+        int realMax = (max>mPaths.size()-1 ? mPaths.size()-1 : max);
+        mFirstLastLoad = new Vector2Int((int)(mScroll*mImgHeight), realMax);
 
         LoadBitmap(mFirstLastLoad.x, mFirstLastLoad.y);
-
-        final Handler handler = new Handler();
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                mScroll += 0.2f;
-                invalidate();
-                handler.postDelayed(this, 300);
-            }
-        });
-
     }
 
     private void LoadBitmap(final int first, final int last) {
@@ -168,7 +158,6 @@ public class DrawImageView extends View {
         return true;
     }
 
-
     public class ScaleGesture extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
@@ -178,14 +167,15 @@ public class DrawImageView extends View {
             else if(mScale > (float)mRangeScale.y)
                 mScale = (float)mRangeScale.y;
 
-
             mNbPicture = 1 + mMaxNbPictureOnLine - (int)(mScale*mMaxNbPictureOnLine/mRangeScale.y);
 
             if(mNbPicture != mLastNbPicture) {
                 mImgWidth = (mWidth / mNbPicture);
                 mImgHeight = mImgWidth * mBasicSizeImg.y / mBasicSizeImg.x;
 
-                mFirstLastLoad = new Vector2Int((int)(mScroll*mImgHeight), (int)((mHeight+(int)(mScroll*mImgHeight))/mImgHeight*mNbPicture*1.5));
+                int max = (int)((mHeight+(int)(mScroll*mImgHeight))/mImgHeight*mNbPicture*1.5);
+                int realMax = (max>mPaths.size()-1 ? mPaths.size()-1 : max);
+                mFirstLastLoad = new Vector2Int((int)(mScroll*mImgHeight), realMax);
                 LoadBitmap(mFirstLastLoad.x, mFirstLastLoad.y);
 
                 invalidate();
