@@ -6,14 +6,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Matthieu
@@ -68,6 +66,7 @@ public class DrawImageView extends View {
         super(context);
         mBasicSizeImg = new Vector2Int(480, 320);
         mRangeScale = new Vector2Int(1, 3);
+        mRangeScroll = new Vector2Int(0, 0);
         mMaxNbPictureOnLine = 7;
         mHeight = height;
         mWidth = width;
@@ -84,11 +83,7 @@ public class DrawImageView extends View {
         int realMax = (max>mPaths.size()-1 ? mPaths.size()-1 : max);
         mFirstLastLoad = new Vector2Int((int)(mScroll*mImgHeight), realMax);
 
-        //mRangeScroll = new Vector2Int(0, (int)(mPaths.size()/mNbPicture-mHeight/mImgHeight*0.8));
-        mRangeScroll = new Vector2Int(0, 0);
-
-        //LoadBitmap(mFirstLastLoad.x, mFirstLastLoad.y);
-        LoadBitmap(mFirstLastLoad.x, mPaths.size()-1);
+        LoadBitmap(0, mPaths.size()-1);
     }
 
     /**
@@ -214,7 +209,7 @@ public class DrawImageView extends View {
                 mFirstLastLoad = new Vector2Int(0, realMax);
                 mScroll = 0;
                 mRangeScroll = new Vector2Int(0, (int)(realMax/mNbPicture-mHeight/mImgHeight*0.8));
-                LoadBitmap(mFirstLastLoad.x, mPaths.size()-1);
+                LoadBitmap(0, mPaths.size()-1);
 
                 invalidate();
             }
