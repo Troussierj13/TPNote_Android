@@ -57,7 +57,7 @@ public class DrawImageView extends View {
         mPaths = Scan.getCameraImages(context);
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGesture());
 
-        for(int i=1;i<66;i++) {
+        for(int i=1;i<10;i++) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
