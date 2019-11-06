@@ -12,6 +12,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class DrawImageView extends View {
@@ -54,14 +55,14 @@ public class DrawImageView extends View {
         mImgWidth = (mWidth/mNbPicture);
         mImgHeight = mImgWidth*mBasicSizeImg.y/mBasicSizeImg.x;
         mPaintDraw = new Paint(Paint.DITHER_FLAG);
-        mPaths = Scan.getCameraImages(context);
+        mPaths = Scan.getImagePaths(context);
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGesture());
 
         for(int i=1;i<10;i++) {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            BitmapFactory.decodeFile(mPaths.get(mPaths.size()-i), options);
+            BitmapFactory.decodeFile(mPaths.get(i), options);
 
             int rationX = (int)Math.ceil(options.outWidth/mImgWidth);
             int rationY = (int)Math.ceil(options.outHeight/mImgHeight);
@@ -69,7 +70,7 @@ public class DrawImageView extends View {
             options.inSampleSize = (rationX>rationY ? rationX : rationY);
             options.inJustDecodeBounds = false;
 
-            Bitmap bm = BitmapFactory.decodeFile(mPaths.get(mPaths.size()-i), options);
+            Bitmap bm = BitmapFactory.decodeFile(mPaths.get(i), options);
 
             mDraw.add(bm);
         }
