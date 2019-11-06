@@ -6,13 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class DrawImageView extends View {
@@ -55,7 +53,7 @@ public class DrawImageView extends View {
         mImgWidth = (mWidth/mNbPicture);
         mImgHeight = mImgWidth*mBasicSizeImg.y/mBasicSizeImg.x;
         mPaintDraw = new Paint(Paint.DITHER_FLAG);
-        mPaths = Scan.getImagePaths(context);
+        mPaths = Scan.cheminImagePeriph(context);
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGesture());
 
         for(int i=1;i<10;i++) {
