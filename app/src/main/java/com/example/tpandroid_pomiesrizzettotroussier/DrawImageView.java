@@ -35,6 +35,10 @@ public class DrawImageView extends View {
     private ArrayList<String> mPaths;
     private Vector2Int mFirstLastLoad;
     private int mActualLoad;
+    private boolean mNeedReload = false;
+    private Handler mHandler;
+    private float mFactorScroll = 0.01f;
+    private Vector2Int mRangeScroll;
 
     private float start = 0;
     private float position = 0;
@@ -70,67 +74,43 @@ public class DrawImageView extends View {
         int realMax = (max>mPaths.size()-1 ? mPaths.size()-1 : max);
         mFirstLastLoad = new Vector2Int((int)(mScroll*mImgHeight), realMax);
 
-        LoadBitmap(mFirstLastLoad.x, mFirstLastLoad.y);
+        //mRangeScroll = new Vector2Int(0, (int)(mPaths.size()/mNbPicture-mHeight/mImgHeight*0.8));
+        mRangeScroll = new Vector2Int(0, 0);
+
+        //LoadBitmap(mFirstLastLoad.x, mFirstLastLoad.y);
+        LoadBitmap(mFirstLastLoad.x, mPaths.size()-1);
     }
 
     private void LoadBitmap(final int first, final int last) {
         mActualLoad = first;
         mDraw.clear();
 
-        final Handler handler = new Handler();
+        mHandler = new Handler();
 
-        handler.post(new Runnable() {
+        mHandler.post(new Runnable() {
             @Override
             public void run() {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                BitmapFactory.decodeFile(mPaths.get(mActualLoad), options);
+                if(mActualLoad < mPaths.size()) {
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+                    options.inJustDecodeBounds = true;
+                    options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+                    BitmapFactory.decodeFile(mPaths.get(mActualLoad), options);
 
-                int rationX = (int)Math.ceil(options.outWidth/mImgWidth);
-                int rationY = (int)Math.ceil(options.outHeight/mImgHeight);
+                    int rationX = (int) Math.ceil(options.outWidth / mImgWidth);
+                    int rationY = (int) Math.ceil(options.outHeight / mImgHeight);
 
-                options.inSampleSize = (rationX>rationY ? rationX : rationY);
-                options.inJustDecodeBounds = false;
+                    options.inSampleSize = (rationX > rationY ? rationX : rationY);
+                    options.inJustDecodeBounds = false;
 
-                Bitmap bm = BitmapFactory.decodeFile(mPaths.get(mActualLoad), options);
+                    Bitmap bm = BitmapFactory.decodeFile(mPaths.get(mActualLoad), options);
 
-                mDraw.add(bm);
-                invalidate();
-                mActualLoad++;
+                    mDraw.add(bm);
+                    invalidate();
+                    mActualLoad++;
 
-                if(mActualLoad <= last)
-                    handler.post(this);
-            }
-        });
-    }
-
-    private void AddLoadedBitmap(final int first, final int last) {
-        mActualLoad = first;
-        final Handler handler = new Handler();
-
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                BitmapFactory.decodeFile(mPaths.get(mActualLoad), options);
-
-                int rationX = (int)Math.ceil(options.outWidth/mImgWidth);
-                int rationY = (int)Math.ceil(options.outHeight/mImgHeight);
-
-                options.inSampleSize = (rationX>rationY ? rationX : rationY);
-                options.inJustDecodeBounds = false;
-
-                Bitmap bm = BitmapFactory.decodeFile(mPaths.get(mActualLoad), options);
-
-                mDraw.add(bm);
-                invalidate();
-                mActualLoad++;
-
-                if(mActualLoad <= last)
-                    handler.post(this);
+                    if (mActualLoad <= last)
+                        mHandler.post(this);
+                }
             }
         });
     }
@@ -142,8 +122,10 @@ public class DrawImageView extends View {
         int x = 0;
         int y = 0;
 
-        int first = 0;
-        int last = mDraw.size();//first+(mHeight/mImgHeight*mNbPicture);
+        int first = (int)mScroll*mNbPicture;
+        first = (first<0 ? 0 : first);
+        int last = (int)(first+(mHeight/mImgHeight*mNbPicture)*1.5);
+        last = ((mDraw.size()-1)<last ? mDraw.size()-1 : last);
 
         for(int i=first; i<last ; i++) {
             Bitmap tmp = Bitmap.createScaledBitmap(mDraw.get(i), mImgWidth, mImgHeight, false);
@@ -154,6 +136,9 @@ public class DrawImageView extends View {
                 y++;
             }
         }
+
+        int yScrollMax = y*mImgHeight-mHeight/mImgHeight;
+        mRangeScroll.y = (yScrollMax<0 ? 0 : yScrollMax);
     }
 
     @Override
@@ -163,9 +148,16 @@ public class DrawImageView extends View {
         if(event.getAction() == MotionEvent.ACTION_DOWN){
             start = event.getY();
         }else if(event.getAction() == MotionEvent.ACTION_MOVE){
-            position += start - event.getY();
+            mScroll += (start - event.getY())/mImgHeight;
             start = event.getY();
-            System.out.println(position);
+            System.out.println(mScroll);
+
+            if(mScroll<mRangeScroll.x)
+                mScroll = mRangeScroll.x;
+            else if(mScroll>mRangeScroll.y)
+                mScroll = mRangeScroll.y;
+
+            invalidate();
         }
         return true;
     }
@@ -187,8 +179,10 @@ public class DrawImageView extends View {
 
                 int max = (int)((mHeight+(int)(mScroll*mImgHeight))/mImgHeight*mNbPicture*1.5);
                 int realMax = (max>mPaths.size()-1 ? mPaths.size()-1 : max);
-                mFirstLastLoad = new Vector2Int((int)(mScroll*mImgHeight), realMax);
-                LoadBitmap(mFirstLastLoad.x, mFirstLastLoad.y);
+                mFirstLastLoad = new Vector2Int(0, realMax);
+                mScroll = 0;
+                mRangeScroll = new Vector2Int(0, (int)(realMax/mNbPicture-mHeight/mImgHeight*0.8));
+                LoadBitmap(mFirstLastLoad.x, mPaths.size()-1);
 
                 invalidate();
             }
