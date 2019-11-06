@@ -35,13 +35,10 @@ public class DrawImageView extends View {
     private ArrayList<String> mPaths;
     private Vector2Int mFirstLastLoad;
     private int mActualLoad;
-    private boolean mNeedReload = false;
     private Handler mHandler;
-    private float mFactorScroll = 0.01f;
     private Vector2Int mRangeScroll;
 
     private float start = 0;
-    private float position = 0;
 
 
     public class Vector2Int {
