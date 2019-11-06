@@ -12,6 +12,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class DrawImageView extends View {
@@ -54,7 +55,7 @@ public class DrawImageView extends View {
         mImgWidth = (mWidth/mNbPicture);
         mImgHeight = mImgWidth*mBasicSizeImg.y/mBasicSizeImg.x;
         mPaintDraw = new Paint(Paint.DITHER_FLAG);
-        mPaths = Scan.getCameraImages(context);
+        mPaths = Scan.getImagePaths(context);
         mScaleGestureDetector = new ScaleGestureDetector(context, new ScaleGesture());
 
         for(int i=1;i<10;i++) {
