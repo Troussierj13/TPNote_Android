@@ -68,7 +68,6 @@ public class Scan extends View {
         }
 
     public static ArrayList<String> getImagePaths(Context context) {
-        // The list of columns we're interested in:
         String[] columns = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DATE_ADDED};
 
         final Cursor cursor = context.getContentResolver().
@@ -76,10 +75,10 @@ public class Scan extends View {
                         columns, // The columns we're interested in
                         null, // A WHERE-filter query
                         null, // The arguments for the filter-query
-                        MediaStore.Images.Media.DATE_ADDED + " ASC" // Order the results, newest first
+                        MediaStore.Images.Media.DATE_ADDED + " DESC" // Order the results, newest first
                 );
 
-        List<String> result = new ArrayList<String>(cursor.getCount());
+        ArrayList<String> result = new ArrayList<>(cursor.getCount());
 
         if (cursor.moveToFirst()) {
             final int image_path_col = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
@@ -87,8 +86,8 @@ public class Scan extends View {
                 result.add(cursor.getString(image_path_col));
             } while (cursor.moveToNext());
         }
-        cursor.close();
 
-        return (ArrayList<String>) result;
+        cursor.close();
+        return result;
     }
 }

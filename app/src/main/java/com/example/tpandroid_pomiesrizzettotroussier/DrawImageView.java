@@ -62,7 +62,7 @@ public class DrawImageView extends View {
             BitmapFactory.Options options = new BitmapFactory.Options();
             options.inJustDecodeBounds = true;
             options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-            BitmapFactory.decodeFile(mPaths.get(mPaths.size()-i), options);
+            BitmapFactory.decodeFile(mPaths.get(i), options);
 
             int rationX = (int)Math.ceil(options.outWidth/mImgWidth);
             int rationY = (int)Math.ceil(options.outHeight/mImgHeight);
@@ -70,7 +70,7 @@ public class DrawImageView extends View {
             options.inSampleSize = (rationX>rationY ? rationX : rationY);
             options.inJustDecodeBounds = false;
 
-            Bitmap bm = BitmapFactory.decodeFile(mPaths.get(mPaths.size()-i), options);
+            Bitmap bm = BitmapFactory.decodeFile(mPaths.get(i), options);
 
             mDraw.add(bm);
         }
