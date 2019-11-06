@@ -41,6 +41,7 @@ public class Scan extends View {
         // Curseur permettant de prendre toutes les images et de les trier par ordre décroissant
         Cursor fetch = context.getContentResolver().query(URI_EXT,mes_donnees,null,
                 null, DATE_PHOTO + " DESC");
+
         ArrayList<String> liste_resultat_return = new ArrayList<>(fetch.getCount());
 
         if (fetch.moveToFirst()) {
