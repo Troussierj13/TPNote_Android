@@ -36,6 +36,10 @@ public class DrawImageView extends View {
     private Vector2Int mFirstLastLoad;
     private int mActualLoad;
 
+    private float start = 0;
+    private float position = 0;
+
+
     public class Vector2Int {
         public int x;
         public int y;
@@ -155,6 +159,14 @@ public class DrawImageView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         mScaleGestureDetector.onTouchEvent(event);
+
+        if(event.getAction() == MotionEvent.ACTION_DOWN){
+            start = event.getY();
+        }else if(event.getAction() == MotionEvent.ACTION_MOVE){
+            position += start - event.getY();
+            start = event.getY();
+            System.out.println(position);
+        }
         return true;
     }
 

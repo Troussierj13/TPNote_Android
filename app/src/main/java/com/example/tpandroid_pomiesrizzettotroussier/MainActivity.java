@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity {
         int height = size.y;
 
         super.onCreate(savedInstanceState);
-        DrawImageView view = new DrawImageView(this);
+        DrawImageView view = new DrawImageView(this, width, height);
         setContentView(view);
     }
 
