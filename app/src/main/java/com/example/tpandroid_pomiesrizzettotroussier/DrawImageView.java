@@ -15,7 +15,11 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * @author Matthieu
+ * @author Julien
+ * @author Romain
+ */
 public class DrawImageView extends View {
 
     private float mScale = 1f;
@@ -38,9 +42,11 @@ public class DrawImageView extends View {
     private Handler mHandler;
     private Vector2Int mRangeScroll;
 
-    private float start = 0;
+    private float start = 0; // Permet de définir le point initial du touch au scroll
 
-
+    /**
+     * Permet de gérer des points avec un x et y
+     */
     public class Vector2Int {
         public int x;
         public int y;
@@ -51,6 +57,13 @@ public class DrawImageView extends View {
         }
     }
 
+    /**
+     * Constructor
+     * Initialisation des variables et appel des fonctions
+     * @param context
+     * @param width
+     * @param height
+     */
     public DrawImageView(Context context, int width, int height) {
         super(context);
         mBasicSizeImg = new Vector2Int(480, 320);
@@ -78,6 +91,12 @@ public class DrawImageView extends View {
         LoadBitmap(mFirstLastLoad.x, mPaths.size()-1);
     }
 
+    /**
+     * Permet de charger en asynchrone les photos sous forme de bitmap
+     * (avec la bonne taille -> option inSampleSize())
+     * @param first début de la range sur laquelle on charge les photos
+     * @param last fin de la range sur laquelle on charge les photos
+     */
     private void LoadBitmap(final int first, final int last) {
         mActualLoad = first;
         mDraw.clear();
@@ -112,6 +131,10 @@ public class DrawImageView extends View {
         });
     }
 
+    /**
+     * Gestion de l'affichage des éléments à l'écran
+     * @param canvas
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -138,17 +161,26 @@ public class DrawImageView extends View {
         mRangeScroll.y = (yScrollMax<0 ? 0 : yScrollMax);
     }
 
+
+    /**
+     * Permet de gérer les gestes effectués sur l'écran
+     *      - Gestion du zoom avec le mScaleGestureDetectore
+     *      - Utilisation des Motion event pour détecter le mouvement effectué
+     * @param event l'evenement traduit par un geste effectué sur l'écran
+     * @return
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        mScaleGestureDetector.onTouchEvent(event);
+        mScaleGestureDetector.onTouchEvent(event);  // Zoom
 
+        /*
+         * Gestion du scrolling
+         */
         if(event.getAction() == MotionEvent.ACTION_DOWN){
             start = event.getY();
         }else if(event.getAction() == MotionEvent.ACTION_MOVE){
             mScroll += (start - event.getY())/mImgHeight;
             start = event.getY();
-            System.out.println(mScroll);
-
             if(mScroll<mRangeScroll.x)
                 mScroll = mRangeScroll.x;
             else if(mScroll>mRangeScroll.y)
@@ -159,6 +191,9 @@ public class DrawImageView extends View {
         return true;
     }
 
+    /**
+     * Classe permettant de gérer le zoom
+     */
     public class ScaleGesture extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
